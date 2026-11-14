@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Web Developer — Розробка сайтів під ключ</title>
+<meta name="description" content="Розробка сайтів під ключ, Landing Page, Telegram-боти. Сучасний дизайн та адаптивність.">
+
+<style>
+    /* --- Базові налаштування та змінні --- */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
+
+    :root {
+        --bg-color: #050505;
+        --text-main: #ffffff;
+        --text-muted: #a1a1aa;
+        --accent: #6366f1; /* Индиго */
+        --accent-glow: rgba(99, 102, 241, 0.4);
+        --card-bg: rgba(255, 255, 255, 0.03);
+        --card-border: rgba(255, 255, 255, 0.08);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    html { scroll-behavior: smooth; }
+    
+    body {
+        font-family: 'Inter', sans-serif;
+        background-color: var(--bg-color);
+        color: var(--text-main);
+        line-height: 1.6;
+        overflow-x: hidden;
+    }
+
+    /* --- Анімований фон --- */
+    .bg-glow {
+        position: fixed;
+        top: 0; left: 0; width: 100vw; height: 100vh;
+        z-index: -1;
+        overflow: hidden;
+        background: radial-gradient(circle at 15% 50%, rgba(99, 102, 241, 0.15), transparent 40%),
+                    radial-gradient(circle at 85% 30%, rgba(168, 85, 247, 0.15), transparent 40%);
+    }
+
+    .container {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 0 24px;
+    }
+
+    /* --- Навігація --- */
+    nav {
+        position: fixed;
+        top: 0; left: 0; width: 100%;
+        padding: 20px 0;
+        background: rgba(5, 5, 5, 0.7);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--card-border);
+        z-index: 100;
+        transition: all 0.3s;
+    }
+    .nav-inner {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .logo {
+        font-size: 20px;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+        color: var(--text-main);
+    }
+    .logo span { color: var(--accent); }
+    
+    .lang-switch {
+        display: flex;
+        background: rgba(255,255,255,0.05);
+        border-radius: 100px;
+        padding: 4px;
+        border: 1px solid var(--card-border);
+    }
+    .lang-switch button {
+        background: transparent;
+        border: none;
+        color: var(--text-muted);
+        font-family: 'Inter', sans-serif;
+        font-size: 13px;
+        font-weight: 600;
+        padding: 6px 16px;
+        border-radius: 100px;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    .lang-switch button.active {
+        background: var(--text-main);
+        color: var(--bg-color);
+    }
+
+    /* --- Головний екран (Hero) --- */
+    header {
+        padding: 180px 0 100px;
+        text-align: center;
+    }
+    .hero-badge {
+        display: inline-block;
+        padding: 8px 16px;
+        border-radius: 100px;
+        background: rgba(99, 102, 241, 0.1);
+        border: 1px solid rgba(99, 102, 241, 0.3);
+        color: #818cf8;
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 24px;
+    }
+    h1 {
+        font-size: clamp(32px, 6vw, 64px);
+        font-weight: 800;
+        line-height: 1.1;
+        letter-spacing: -1.5px;
+        margin-bottom: 24px;
+        background: linear-gradient(180deg, #fff 0%, #a1a1aa 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    .hero-desc {
+        font-size: clamp(16px, 2vw, 20px);
+        color: var(--text-muted);
+        max-width: 600px;
+        margin: 0 auto 40px;
+    }
+
+    /* --- Кнопки --- */
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        padding: 16px 32px;
+        border-radius: 12px;
+        font-size: 16px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s;
+        cursor: pointer;
+        border: none;
+        font-family: 'Inter', sans-serif;
+    }
+    .btn-primary {
+        background: var(--accent);
+        color: #fff;
+        box-shadow: 0 4px 20px var(--accent-glow);
+    }
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 30px var(--accent-glow);
+        background: #4f46e5;
+    }
+
+    /* --- Секції та картки --- */
+    section {
+        padding: 80px 0;
+    }
+    .section-title {
+        font-size: 32px;
+        font-weight: 800;
+        margin-bottom: 48px;
+        letter-spacing: -1px;
+        text-align: center;
+    }
+
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 24px;
+    }
+
+    .card {
+        background: var(--card-bg);
+        border: 1px solid var(--card-border);
+        border-radius: 20px;
+        padding: 32px;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        transition: all 0.3s;
+    }
+    .card:hover {
+        border-color: rgba(99, 102, 241, 0.5);
+        transform: translateY(-5px);
+        background: rgba(255,255,255,0.05);
+    }
+    .card-icon {
+        font-size: 32px;
+        margin-bottom: 16px;
+    }
+    .card h3 {
+        font-size: 20px;
+        margin-bottom: 12px;
+        font-weight: 600;
+    }
+    .card p {
+        color: var(--text-muted);
+        font-size: 15px;
+    }
+
+    /* Списки */
+    ul.custom-list {
+        list-style: none;
+    }
+    ul.custom-list li {
+        position: relative;
+        padding-left: 24px;
+        margin-bottom: 12px;
+        color: var(--text-muted);
+    }
+    ul.custom-list li::before {
+        content: '→';
+        position: absolute;
+        left: 0;
+        color: var(--accent);
+        font-weight: bold;
+    }
+
+    /* --- Контакти --- */
+    .contact-card {
+        text-align: center;
+        padding: 60px 32px;
+    }
+    .tg-link {
+        display: inline-block;
+        font-size: 32px;
+        font-weight: 800;
+        color: var(--accent);
+        text-decoration: none;
+        margin-top: 20px;
+        transition: all 0.3s;
+    }
+    .tg-link:hover {
+        color: #818cf8;
+        text-shadow: 0 0 20px var(--accent-glow);
+    }
+
+    /* --- Анімація появи --- */
+    .reveal {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+    }
+    .reveal.active {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    /* --- Футер --- */
+    footer {
+        padding: 40px 0;
+        text-align: center;
+        border-top: 1px solid var(--card-border);
+        color: var(--text-muted);
+        font-size: 14px;
+    }
+</style>
+</head>
+<body>
+
+    <div class="bg-glow"></div>
+
+    <!-- Навігація -->
+    <nav>
+        <div class="container nav-inner">
+            <div class="logo">Web<span>.</span>Dev</div>
+            <div class="lang-switch">
+                <button data-lang="ua" class="active">UA</button>
+                <button data-lang="ru">RU</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Головний екран -->
+    <header>
+        <div class="container">
+            <div class="hero-badge reveal" data-i18n="badge">Відкритий до нових проєктів</div>
+            <h1 class="reveal" data-i18n="h1">Розробка сайтів під ключ</h1>
+            <p class="hero-desc reveal" data-i18n="desc">
+                Створюю сучасні, швидкі та естетичні сайти, які допомагають бізнесу зростати.
+            </p>
+            <a href="https://t.me/xv71i17" target="_blank" class="btn btn-primary reveal" data-i18n="btn">
+                Обговорити проєкт
+            </a>
+        </div>
+    </header>
+
+    <!-- Послуги -->
+    <section>
+        <div class="container">
+            <h2 class="section-title reveal" data-i18n="services_title">Що я пропоную</h2>
+            <div class="grid">
+                <div class="card reveal">
+                    <div class="card-icon">🚀</div>
+                    <h3 data-i18n="s1_title">Landing Page</h3>
+                    <p data-i18n="s1_desc">Односторінкові сайти з високою конверсією для продажу послуг чи товарів.</p>
+                </div>
+                <div class="card reveal">
+                    <div class="card-icon">💼</div>
+                    <h3 data-i18n="s2_title">Сайти-візитки</h3>
+                    <p data-i18n="s2_desc">Лаконічні представництва вашого бізнесу в інтернеті з усіма контактами.</p>
+                </div>
+                <div class="card reveal">
+                    <div class="card-icon">🌐</div>
+                    <h3 data-i18n="s3_title">Багатосторінкові сайти</h3>
+                    <p data-i18n="s3_desc">Повноцінні корпоративні сайти з каталогами, блогами та розділами.</p>
+                </div>
+                <div class="card reveal">
+                    <div class="card-icon">🏢</div>
+                    <h3 data-i18n="s4_title">Для компаній та послуг</h3>
+                    <p data-i18n="s4_desc">Спеціалізовані рішення для бізнесу, юридичних та медичних установ.</p>
+                </div>
+                <div class="card reveal">
+                    <div class="card-icon">📱</div>
+                    <h3 data-i18n="s5_title">Адаптація під смартфони</h3>
+                    <p data-i18n="s5_desc">Ідеальний вигляд на ПК, планшетах та мобільних пристроях.</p>
+                </div>
+                <div class="card reveal">
+                    <div class="card-icon">🤖</div>
+                    <h3 data-i18n="s6_title">Telegram-боти</h3>
+                    <p data-i18n="s6_desc">Автоматизація бізнесу: боти для замовлень, підтримки та розсилок.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Переваги -->
+    <section>
+        <div class="container">
+            <h2 class="section-title reveal" data-i18n="adv_title">У роботі приділяю увагу</h2>
+            <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">
+                <div class="card reveal" style="padding: 24px;">
+                    <ul class="custom-list">
+                        <li data-i18n="adv1">Сучасному та естетичному дизайну</li>
+                        <li data-i18n="adv2">Зручності користування (UX/UI)</li>
+                    </ul>
+                </div>
+                <div class="card reveal" style="padding: 24px;">
+                    <ul class="custom-list">
+                        <li data-i18n="adv3">Адаптивності під всі екрани</li>
+                        <li data-i18n="adv4">Функціональності та швидкості</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Контакти -->
+    <section>
+        <div class="container">
+            <div class="card contact-card reveal">
+                <h2 style="font-size: 28px; margin-bottom: 16px;" data-i18n="contact_title">Готові до співпраці?</h2>
+                <p style="color: var(--text-muted); margin-bottom: 24px;" data-i18n="contact_desc">
+                    Для обговорення деталей, термінів та вартості пишіть у приватні повідомлення.
+                </p>
+                <a href="https://t.me/xv71i17" target="_blank" class="tg-link">@xv71i17</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Футер -->
+    <footer>
+        <div class="container">
+            <p>© 2026 Web Developer. <span data-i18n="footer_text">Зроблено з увагою до деталей.</span></p>
+            <p style="margin-top: 8px;">Telegram: <a href="https://t.me/xv71i17" target="_blank" style="color: var(--accent); text-decoration: none;">@xv71i17</a></p>
+        </div>
+    </footer>
+
+    <script>
+        // --- 1. Логіка перекладу (UA/RU) ---
+        const translations = {
+            ua: {
+                badge: "Відкритий до нових проєктів",
+                h1: "Розробка сайтів під ключ",
+                desc: "Створюю сучасні, швидкі та естетичні сайти, які допомагають бізнесу зростати.",
+                btn: "Обговорити проєкт",
+                services_title: "Що я пропоную",
+                s1_title: "Landing Page",
+                s1_desc: "Односторінкові сайти з високою конверсією для продажу послуг чи товарів.",
+                s2_title: "Сайти-візитки",
+                s2_desc: "Лаконічні представництва вашого бізнесу в інтернеті з усіма контактами.",
+                s3_title: "Багатосторінкові сайти",
+                s3_desc: "Повноцінні корпоративні сайти з каталогами, блогами та розділами.",
+                s4_title: "Для компаній та послуг",
+                s4_desc: "Спеціалізовані рішення для бізнесу, юридичних та медичних установ.",
+                s5_title: "Адаптація під смартфони",
+                s5_desc: "Ідеальний вигляд на ПК, планшетах та мобільних пристроях.",
+                s6_title: "Telegram-боти",
+                s6_desc: "Автоматизація бізнесу: боти для замовлень, підтримки та розсилок.",
+                adv_title: "У роботі приділяю увагу",
+                adv1: "Сучасному та естетичному дизайну",
+                adv2: "Зручності користування (UX/UI)",
+                adv3: "Адаптивності під всі екрани",
+                adv4: "Функціональності та швидкості",
+                contact_title: "Готові до співпраці?",
+                contact_desc: "Для обговорення деталей, термінів та вартості пишіть у приватні повідомлення.",
+                footer_text: "Зроблено з увагою до деталей."
+            },
+            ru: {
+                badge: "Открыт к новым проектам",
+                h1: "Разработка сайтов под ключ",
+                desc: "Создаю современные, быстрые и эстетичные сайты, которые помогают бизнесу расти.",
+                btn: "Обсудить проект",
+                services_title: "Что я предлагаю",
+                s1_title: "Landing Page",
+                s1_desc: "Одностраничные сайты с высокой конверсией для продажи услуг или товаров.",
+                s2_title: "Сайты-визитки",
+                s2_desc: "Лаконичные представительства вашего бизнеса в интернете со всеми контактами.",
+                s3_title: "Многостраничные сайты",
+                s3_desc: "Полноценные корпоративные сайты с каталогами, блогами и разделами.",
+                s4_title: "Для компаний и услуг",
+                s4_desc: "Специализированные решения для бизнеса, юридических и медицинских учреждений.",
+                s5_title: "Адаптация под смартфоны",
+                s5_desc: "Идеальный вид на ПК, планшетах и мобильных устройствах.",
+                s6_title: "Telegram-боты",
+                s6_desc: "Автоматизация бизнеса: боты для заказов, поддержки и рассылок.",
+                adv_title: "В работе уделяю внимание",
+                adv1: "Современному и эстетичному дизайну",
+                adv2: "Удобству использования (UX/UI)",
+                adv3: "Адаптивности под все экраны",
+                adv4: "Функциональности и скорости",
+                contact_title: "Готовы к сотрудничеству?",
+                contact_desc: "Для обсуждения деталей, сроков и стоимости пишите в личные сообщения.",
+                footer_text: "Сделано с вниманием к деталям."
+            }
+        };
+
+        const langBtns = document.querySelectorAll('.lang-switch button');
+        const i18nElements = document.querySelectorAll('[data-i18n]');
+
+        function setLanguage(lang) {
+            const dict = translations[lang];
+            if (!dict) return;
+
+            i18nElements.forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (dict[key]) {
+                    el.innerHTML = dict[key];
+                }
+            });
+
+            document.documentElement.lang = lang;
+            langBtns.forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.lang === lang);
+            });
+        }
+
+        langBtns.forEach(btn => {
+            btn.addEventListener('click', () => setLanguage(btn.dataset.lang));
+        });
+
+        // --- 2. Анімація при скролі ---
+        const revealElements = document.querySelectorAll('.reveal');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    observer.unobserve(entry.target); // Анімуємо лише один раз
+                }
+            });
+        }, { threshold: 0.1 });
+
+        revealElements.forEach(el => observer.observe(el));
+
+        // --- 3. Ефект навігації при скролі ---
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 50) {
+                nav.style.boxShadow = '0 4px 30px rgba(0,0,0,0.5)';
+            } else {
+                nav.style.boxShadow = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
